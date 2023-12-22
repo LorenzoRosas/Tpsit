@@ -1,2 +1,0 @@
-# Tpsit
-tasks rosas
