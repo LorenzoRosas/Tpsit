@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <style>
+    #time{
+        text-align: center;
+    }
+    #Palla1{
+        position: relative;
+        height: 100px;
+        width: 100px;
+    }
+    #Palla2{
+        position: relative;
+        height: 100px;
+        width: 100px;
+    }
+    #game{
+        border: 5px solid black;
+        padding: 10px;
+        width: 700px;
+        height: 700px;
+        background-color: green;
+    }
+    #time{
+        border: 5px solid black;
+        padding: 10px;
+        width: 700px;
+    }
+    #p1{
+        text-align: left;
+    }
+    #p2{
+        text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <h2>SumoClick - Rosas Lorenzo</h2>
+  <div id="time">
+      <button onclick="avviotimer()">START CRONOMETRO</button>
+      <p id="timer"></p>
+      <p id="final"></p>
+  </div>
+  <div id="game">
+      <div id="p1">
+          <button onclick="moveImage()" id="player1">Giocatore 1</button>
+          <br>
+          <img src="istockphoto-91712739-612x612.jpg" id="Palla1">
+      </div>
+      <div id="circle"></div>
+      <div id="p2">
+          <img src="Palla-calcio-spugna.jpg" id="Palla2">
+          <br>
+          <button onclick="moveImage2()" id="player2">Giocatore 2</button>
+      </div>
+  </div>
+<script>
+  let cont=0;
+  function avviotimer(){
+    time=setInterval(timer, 1000);
+  }
+  function timer(){
+    cont++;
+    document.getElementById('timer').innerHTML=cont;
+    if(cont>60){
+      clearInterval(time);
+      document.getElementById('timer').innerHTML="STOP";
+      document.getElementById("final").innerHTML = "NESSUNO HA VINTO";
+    }
+  }
+  let p1 = 0;
+  let p2 = 0;
+  function moveImage(){
+    var img = document.getElementById("Palla1");
+    let currentLeft = parseInt(getComputedStyle(img).left) || 0;
+    img.style.left = `${currentLeft + 10}px`;
+    p1++;
+    if(p1>=60){
+      document.getElementById("final").innerHTML = "IL GIOCATORE 1 HA VINTO!";
+    }
+  }
+  function moveImage2(){
+    var img = document.getElementById("Palla2");
+    let currentLeft = parseInt(getComputedStyle(img).left) || 0;
+    img.style.left = `${currentLeft - 10}px`;
+    p2++;
+    if(p2>=60){
+      document.getElementById("final").innerHTML = "IL GIOCATORE 2 HA VINTO!";
+    }
+  }
+</script>
+</body>
+
+</html>
