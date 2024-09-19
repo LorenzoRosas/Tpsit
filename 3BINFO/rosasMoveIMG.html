@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosas Lorenzo - Compito di TIPSIT</title>
+    <style>
+        body {
+            background-color: #fff;
+            margin: 0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #929292;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #2600ff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #image{
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button onclick="moveImage('up')">▲</button>
+        <br>
+        <button onclick="moveImage('left')">◄</button>
+        <button onclick="moveImage('right')">►</button>
+        <br>
+        <button onclick="moveImage('down')">▼</button>
+    </div>
+    <img id="image" src="https://thumbs.dreamstime.com/b/balls-11003827.jpg">
+    <script>
+    	const movingImage = document.getElementById('image');
+        function moveImage(direction) {
+            const step = 10;
+            let currentLeft = parseInt(getComputedStyle(movingImage).left) || 0;
+            let currentTop = parseInt(getComputedStyle(movingImage).top) || 0;
+        
+            switch (direction) {
+                case 'up':
+                    movingImage.style.top = `${currentTop - step}px`;
+                    break;
+                case 'down':
+                    movingImage.style.top = `${currentTop + step}px`;
+                    break;
+                case 'left':
+                    movingImage.style.left = `${currentLeft - step}px`;
+                    break;
+                case 'right':
+                    movingImage.style.left = `${currentLeft + step}px`;
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
