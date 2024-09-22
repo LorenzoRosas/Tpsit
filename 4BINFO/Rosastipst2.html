@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifica Pari/Dispari</title>
+
+    <style>
+        body {
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #0066cc;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        #output {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            margin: 20px auto;
+            text-align: center;
+            border-radius: 8px;
+        }
+    </style>
+
+    <script>
+        function generatore() {
+            return Math.floor(Math.random() * 100) + 1;
+        }
+
+        function paridispcheck() {
+            let numrand = generatore();
+            let outputBox = document.getElementById('output');
+            if (numrand % 2 === 0) {
+                outputBox.innerHTML = `Il numero ${numrand} è pari.`;
+            } else {
+                outputBox.innerHTML = `Il numero ${numrand} è dispari.`;
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <h1>Verifica Pari/Dispari</h1>
+    
+    <button onclick="paridispcheck()">Genera Numero Pari e Dispari</button>
+    <div id="output"></div>
+
+</body>
+</html>
