@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosas Lorenzo ES4</title>
+
+    <style>
+        body {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        h1 {
+            color: #0066cc;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #output {
+            width: 200px;
+            padding: 20px;
+            margin: 20px auto;
+            background-color: #d3d3d3;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+    </style>
+
+    <script>
+        function generatore() {
+            return Math.floor(Math.random() * 100) + 1;
+        }
+
+        function paridispcheck() {
+            let numrand1 = generatore();
+            let numrand2 = generatore();
+            let outputBox = document.getElementById('output');
+
+            let out1 = (numrand1 % 2 === 0) ? `Il numero ${numrand1} è pari.` : `Il numero ${numrand1} è dispari.`;
+            let out2 = (numrand2 % 2 === 0) ? `Il numero ${numrand2} è pari.` : `Il numero ${numrand2} è dispari.`;
+
+            let differenza = (numrand1 > numrand2) ? numrand1 - numrand2 : numrand2 - numrand1;
+
+            outputBox.innerHTML = `${out1} <br> ${out2} <br> La differenza tra ${numrand1} e ${numrand2} è: ${differenza}`;
+        }
+    </script>
+</head>
+<body>
+
+    <h1>Verifica Pari/Dispari e Differenza</h1>
+    
+    <button onclick="paridispcheck()">Genera Numeri e Analizza</button>
+    <div id="output"></div>
+    <p>by Rosas Lorenzo</p>
+
+</body>
+</html>
+
