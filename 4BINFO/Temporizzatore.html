@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosas Lorenzo Temporizzatore</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        h2 {
+            color: #555;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #conto {
+            font-weight: bold;
+            font-size: 24px;
+            color: red;
+        }
+
+        #numeri, #risultato, #punti {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>INDOVINA IL NUMERO</h1>
+<p>Indovina quale numero non verrà estratto nei prossimi 10.</p>
+
+<label for="scelta">Inserisci il tuo numero (0-10):</label>
+<input type="number" id="scelta" min="0" max="10">
+<button onclick="inizia()">Inizia il gioco</button>
+
+<h2>Countdown: <span id="conto">3</span></h2>
+<h2>Numeri estratti: <span id="numeri"></span></h2>
+<h2>Risultato: <span id="risultato"></span></h2>
+<h2>Punteggio: <span id="punti">0</span></h2>
+
+<script>
+    let contoElem = document.getElementById('conto');
+    let numeriElem = document.getElementById('numeri');
+    let risultatoElem = document.getElementById('risultato');
+    let puntiElem = document.getElementById('punti');
+    let punti = 0;
+    let intervalloConto;
+    let intervalloEstrazione;
+    let sceltaUtente;
+
+    function inizia() {
+        sceltaUtente = parseInt(document.getElementById('scelta').value);
+        if (isNaN(sceltaUtente) || sceltaUtente < 0 || sceltaUtente > 10) {
+            alert("Inserisci un numero valido tra 0 e 10!");
+            return;
+        }
+
+        clearInterval(intervalloConto);
+        clearInterval(intervalloEstrazione);
+
+        avviaConto(3);
+    }
+
+    function avviaConto(secondi) {
+        contoElem.innerText = secondi;
+        
+        intervalloConto = setInterval(() => {
+            secondi--;
+            contoElem.innerText = secondi;
+            if (secondi <= 0) {
+                clearInterval(intervalloConto);
+                generaNumeriCasuali();
+            }
+        }, 1000);
+    }
+
+    function generaNumeriCasuali() {
+        let numeriCasuali = [];
+        for (let i = 0; i < 10; i++) {
+            numeriCasuali.push(Math.floor(Math.random() * 11));
+        }
+
+        numeriElem.innerText = numeriCasuali.join(", ");
+        
+        if (!numeriCasuali.includes(sceltaUtente)) {
+            risultatoElem.innerText = `Hai indovinato!`;
+            punti++;
+        } else {
+            risultatoElem.innerText = `Non hai indovinato!`;
+        }
+
+        puntiElem.innerText = punti;
+
+        intervalloEstrazione = setInterval(() => {
+            generaNumeriCasuali();
+        }, 5000);
+    }
+</script>
+</body>
+</html>
