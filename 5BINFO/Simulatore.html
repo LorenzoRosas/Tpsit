@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QUANTUM CORE | Simulatore CPU Avanzato</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #00f7ff;
+            --secondary: #ff00e6;
+            --accent: #00ff9d;
+            --dark: #0a0a1e;
+            --darker: #050510;
+            --light: #e0f8ff;
+            --neon-glow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            color: var(--light);
+            background: #000;
+            min-height: 100vh;
+            perspective: 1000px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+
+        /* ===== SFONDO PULITO E MINIMAL ===== */
+        .clean-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -5;
+            background: 
+                /* Sfondo principale pulito */
+                radial-gradient(ellipse at center, #0a0a2e 0%, #000000 100%),
+                /* Effetti di luce sottili */
+                radial-gradient(circle at 20% 80%, rgba(0, 247, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 230, 0.02) 0%, transparent 50%);
+        }
+
+        /* Linee geometriche sottili */
+        .geometric-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -4;
+            opacity: 0.1;
+            background: 
+                linear-gradient(90deg, transparent 49.5%, var(--primary) 50%, transparent 50.5%),
+                linear-gradient(transparent 49.5%, var(--primary) 50%, transparent 50.5%);
+            background-size: 100px 100px;
+            animation: linesPulse 15s infinite ease-in-out;
+        }
+
+        @keyframes linesPulse {
+            0%, 100% { opacity: 0.05; }
+            50% { opacity: 0.15; }
+        }
+
+        /* Punti di connessione minimali */
+        .connection-dots {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background-image: 
+                radial-gradient(circle at 25% 25%, var(--primary) 1px, transparent 1px),
+                radial-gradient(circle at 75% 25%, var(--secondary) 1px, transparent 1px),
+                radial-gradient(circle at 25% 75%, var(--accent) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, var(--primary) 1px, transparent 1px);
+            background-size: 200px 200px;
+            opacity: 0.1;
+            animation: dotsShift 20s infinite linear;
+        }
+
+        @keyframes dotsShift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Effetto di luce centrale pulito */
+        .center-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0, 247, 255, 0.05) 0%, transparent 70%);
+            z-index: -4;
+            opacity: 0.3;
+            animation: glowPulse 8s infinite ease-in-out;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { 
+                opacity: 0.2;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                opacity: 0.4;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        /* Container principale */
+        .container-main {
+            max-width: 1400px;
+            margin: 40px auto;
+            position: relative;
+            z-index: 10;
+            transform-style: preserve-3d;
+            padding-bottom: 50px;
+            min-height: 100vh;
+        }
+
+        /* Header con effetto ologramma avanzato */
+        .header-hologram {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            transform-style: preserve-3d;
+            padding: 30px 0;
+        }
+
+        .header-hologram::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                rgba(0, 247, 255, 0.1) 0%, 
+                transparent 30%, 
+                transparent 70%, 
+                rgba(255, 0, 230, 0.1) 100%);
+            filter: blur(20px);
+            z-index: -1;
+        }
+
+        .header-hologram h2 {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: var(--neon-glow);
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            position: relative;
+            display: inline-block;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header-hologram h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+            box-shadow: 0 0 20px var(--primary);
+            animation: pulseLine 2s infinite;
+        }
+
+        @keyframes pulseLine {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .subtitle {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300;
+            font-size: 1.4rem;
+            color: rgba(224, 248, 255, 0.8);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+        }
+
+        /* Card futuristiche con effetto ONDE QUANTICHE */
+        .card-futuristic {
+            background: linear-gradient(145deg, 
+                rgba(20, 20, 40, 0.7) 0%, 
+                rgba(10, 10, 30, 0.5) 50%, 
+                rgba(30, 30, 60, 0.3) 100%);
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 30px rgba(0, 247, 255, 0.3);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transform: translateZ(0);
+        }
+
+        /* Effetto onda quantica al hover */
+        .card-futuristic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 247, 255, 0.1), 
+                rgba(255, 0, 230, 0.1), 
+                transparent);
+            transition: left 0.8s ease-in-out;
+            z-index: 1;
+        }
+
+        .card-futuristic:hover::before {
+            left: 100%;
+        }
+
+        /* Effetto bordo luminoso pulsante */
+        .card-futuristic::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            border-radius: 27px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            animation: borderGlow 3s infinite linear;
+            background-size: 400% 400%;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .card-futuristic:hover::after {
+            opacity: 1;
+        }
+
+        .card-futuristic:hover {
+            transform: translateY(-12px) scale(1.02) translateZ(0);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 50px rgba(0, 247, 255, 0.5),
+                0 0 80px rgba(255, 0, 230, 0.3);
+        }
+
+        /* Pulsanti con effetto quantico */
+        .btn-futuristic {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 15px;
+            padding: 14px 28px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            box-shadow: 
+                0 8px 20px rgba(0, 247, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateZ(0);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        .btn-futuristic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+            transition: left 0.8s;
+            z-index: -1;
+        }
+
+        .btn-futuristic:hover::before {
+            left: 100%;
+        }
+
+        .btn-futuristic:hover {
+            transform: translateY(-5px) scale(1.05) translateZ(0);
+            box-shadow: 
+                0 12px 30px rgba(0, 247, 255, 0.6),
+                0 0 40px rgba(255, 0, 230, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        }
+
+        .btn-futuristic:active {
+            transform: translateY(2px) translateZ(0);
+        }
+
+        /* Input futuristici avanzati */
+        .form-control, .form-select {
+            background: rgba(15, 20, 40, 0.8);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            border-radius: 12px;
+            color: var(--light);
+            padding: 14px 18px;
+            transition: all 0.4s ease;
+            box-shadow: 
+                inset 0 2px 8px rgba(0, 0, 0, 0.4),
+                0 0 10px rgba(0, 247, 255, 0.1);
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(20, 25, 50, 0.9);
+            border-color: var(--primary);
+            box-shadow: 
+                inset 0 2px 8px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(0, 247, 255, 0.5);
+            color: var(--light);
+        }
+
+        /* Tabelle con effetto trasparente avanzato */
+        table {
+            background: rgba(15, 20, 40, 0.7);
+            border-radius: 18px;
+            overflow: hidden;
+            border-collapse: separate;
+            border-spacing: 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+            color: #fff;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        tr:nth-child(even) {
+            background: rgba(25, 30, 60, 0.6);
+        }
+
+        tr:nth-child(odd) {
+            background: rgba(20, 25, 50, 0.6);
+        }
+
+        tr:hover {
+            background: rgba(0, 247, 255, 0.2);
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+
+        td, th {
+            color: #eee !important;
+            padding: 15px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Container Gantt avanzato */
+        #ganttContainer {
+            background: linear-gradient(145deg, 
+                rgba(15, 20, 40, 0.9), 
+                rgba(25, 30, 60, 0.7));
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+        }
+
+        #ganttContainer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        /* Pannello di controllo quantico */
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .control-group {
+            background: rgba(20, 25, 50, 0.7);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-group:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 25px rgba(0, 247, 255, 0.4);
+        }
+
+        /* Footer futuristico avanzato */
+        .footer-futuristic {
+            text-align: center;
+            padding: 25px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(0, 247, 255, 0.2);
+            color: rgba(224, 248, 255, 0.7);
+            font-size: 1rem;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            background: rgba(15, 20, 40, 0.5);
+        }
+
+        .footer-futuristic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        /* Indicatore di priorità */
+        .priority-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .priority-high { background: #ff006e; box-shadow: 0 0 10px #ff006e; }
+        .priority-medium { background: #ffaa00; box-shadow: 0 0 10px #ffaa00; }
+        .priority-low { background: #00ff9d; box-shadow: 0 0 10px #00ff9d; }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .header-hologram h2 {
+                font-size: 2.8rem;
+            }
+            
+            .control-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-futuristic {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Effetto di caricamento */
+        .loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            z-index: 1000;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* Animazioni per i titoli */
+        @keyframes titleGlow {
+            0%, 100% { 
+                text-shadow: 0 0 20px var(--primary), 0 0 40px rgba(0, 247, 255, 0.5); 
+            }
+            50% { 
+                text-shadow: 0 0 30px var(--primary), 0 0 60px rgba(0, 247, 255, 0.7), 0 0 80px rgba(255, 0, 230, 0.5); 
+            }
+        }
+
+        h2, h3, h4 {
+            color: var(--primary);
+            animation: titleGlow 3s infinite alternate;
+        }
+
+        /* Effetto di digitazione per il titolo */
+        .typing-effect {
+            overflow: hidden;
+            border-right: 3px solid var(--primary);
+            white-space: nowrap;
+            margin: 0 auto;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary) }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- SFONDO PULITO E MINIMAL -->
+    <div class="clean-background"></div>
+    <div class="geometric-lines"></div>
+    <div class="connection-dots"></div>
+    <div class="center-glow"></div>
+    
+    <div class="loading-bar" id="loadingBar"></div>
+
+    <div class="container container-main">
+        <div class="header-hologram">
+            <h2 class="typing-effect">SIMULATORE DI ALGORITMI</h2>
+            <div class="subtitle">Sistema di Visualizzazione Quantistica della Pianificazione dei Processi</div>
+        </div>
+
+        <div class="card card-futuristic p-4 mb-5">
+            <h4 class="mb-4">PANNELLO DI CONTROLLO QUANTICO</h4>
+            <div class="control-panel">
+                <div class="control-group">
+                    <label for="algoritmo" class="form-label">Algoritmo di Pianificazione</label>
+                    <select class="form-select" id="algoritmo">
+                        <option value="FCFS">FCFS (First-Come, First-Served)</option>
+                        <option value="SJF">SJF (Shortest Job First)</option>
+                        <option value="RR">Round Robin</option>
+                        <option value="Priority">Priority Scheduling</option>
+                        <option value="PriorityRR">Priority Round Robin</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="quantum" class="form-label">Quantum (solo per RR)</label>
+                    <input type="number" class="form-control" id="quantum" value="2" min="1">
+                </div>
+                <div class="control-group">
+                    <label for="numRandom" class="form-label">Task Casuali</label>
+                    <input type="number" class="form-control" id="numRandom" value="5" min="1">
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-futuristic p-4 mb-5">
+            <h4 class="mb-4">GENERATORE DI TASK QUANTICI</h4>
+            <div class="row g-3 align-items-end">
+                <div class="col-md-2">
+                    <label class="form-label">ID Task</label>
+                    <input type="number" class="form-control" id="taskId" placeholder="1">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tempo di Arrivo</label>
+                    <input type="number" class="form-control" id="arrivo" placeholder="0">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Durata CPU</label>
+                    <input type="number" class="form-control" id="durata" placeholder="5">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Priorità</label>
+                    <select class="form-select" id="priorita">
+                        <option value="1">Alta (1)</option>
+                        <option value="2" selected>Media (2)</option>
+                        <option value="3">Bassa (3)</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-futuristic w-100" onclick="aggiungiTask()">AGGIUNGI TASK</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mb-5">
+            <button class="btn btn-futuristic btn-lg mx-2 mb-3" onclick="simula()">ATTIVA SIMULAZIONE</button>
+            <button class="btn btn-futuristic btn-lg mx-2 mb-3" onclick="simulazioneAutomatica()">SIMULAZIONE AUTOMATICA</button>
+            <button class="btn btn-futuristic btn-lg mx-2 mb-3" onclick="scaricaJSON()">ESPORTA DATI QUANTICI</button>
+        </div>
+
+        <div class="card card-futuristic p-4 mb-5">
+            <h4 class="mb-4">CODA DEI PROCESSI QUANTICI</h4>
+            <table class="table table-dark table-striped" id="listaTask">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Arrivo</th>
+                        <th>Durata</th>
+                        <th>Priorità</th>
+                        <th>Azione</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="card card-futuristic p-4 mb-5">
+            <h4 class="mb-4">RISULTATI DELLA SIMULAZIONE QUANTICA</h4>
+            <table class="table table-dark table-striped" id="tabellaRisultati">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Priorità</th>
+                        <th>Inizio</th>
+                        <th>Fine</th>
+                        <th>Turnaround</th>
+                        <th>Attesa</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="ganttContainer" class="mb-5">
+            <h4 class="mb-4">TIMELINE QUANTICA DEI PROCESSI</h4>
+            <canvas id="ganttChart"></canvas>
+        </div>
+        
+        <div class="footer-futuristic">
+            QUANTUM CORE SIMULATORE | Sistema di Visualizzazione Quantistica v5.0 | © 2024 Quantum Technologies
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Effetto di caricamento
+        window.addEventListener('load', function() {
+            document.getElementById('loadingBar').style.width = '100%';
+            setTimeout(() => {
+                document.getElementById('loadingBar').style.opacity = '0';
+            }, 500);
+        });
+
+        /* ===== Logica dei Task e Algoritmi ===== */
+        let taskList = [];
+        
+        function aggiornaTabellaTask() { 
+            let tbody = document.querySelector("#listaTask tbody"); 
+            tbody.innerHTML = ""; 
+            taskList.forEach((t, i) => { 
+                let priorityClass = '';
+                let priorityText = '';
+                
+                switch(t.priorita) {
+                    case 1:
+                        priorityClass = 'priority-high';
+                        priorityText = 'Alta';
+                        break;
+                    case 2:
+                        priorityClass = 'priority-medium';
+                        priorityText = 'Media';
+                        break;
+                    case 3:
+                        priorityClass = 'priority-low';
+                        priorityText = 'Bassa';
+                        break;
+                }
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${t.arrivo}</td>
+                        <td>${t.durata}</td>
+                        <td>
+                            <span class="priority-indicator ${priorityClass}"></span>
+                            ${priorityText}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" onclick="rimuoviTask(${i})">
+                                RIMUOVI
+                            </button>
+                        </td>
+                    </tr>
+                `; 
+            }); 
+        }
+        
+        function aggiungiTask() { 
+            let id = parseInt(document.getElementById("taskId").value); 
+            let arrivo = parseInt(document.getElementById("arrivo").value); 
+            let durata = parseInt(document.getElementById("durata").value); 
+            let priorita = parseInt(document.getElementById("priorita").value);
+            
+            if (isNaN(id) || isNaN(arrivo) || isNaN(durata)) { 
+                alert("Compila tutti i campi correttamente!"); 
+                return; 
+            } 
+            
+            taskList.push({ id, arrivo, durata, priorita }); 
+            aggiornaTabellaTask(); 
+            document.getElementById("taskId").value = ""; 
+            document.getElementById("arrivo").value = ""; 
+            document.getElementById("durata").value = ""; 
+            document.getElementById("priorita").value = "2";
+        }
+        
+        function rimuoviTask(i) { 
+            taskList.splice(i, 1); 
+            aggiornaTabellaTask(); 
+        }
+
+        /* Algoritmo FCFS */
+        function fcfs(tasks) {
+            tasks.sort((a, b) => a.arrivo - b.arrivo);
+            let tempo = 0;
+            for (let t of tasks) { 
+                if (tempo < t.arrivo) tempo = t.arrivo; 
+                t.inizio = tempo; 
+                t.fine = tempo + t.durata; 
+                t.turnaround = t.fine - t.arrivo; 
+                t.attesa = t.turnaround - t.durata; 
+                tempo += t.durata; 
+            }
+            return tasks;
+        }
+
+        /* Algoritmo SJF */
+        function sjf(tasks) {
+            let completati = [], tempo = 0;
+            let rimanenti = tasks.map(t => ({ ...t }));
+            while (completati.length < tasks.length) {
+                let pronti = rimanenti.filter(t => t.arrivo <= tempo && !completati.includes(t)).sort((a, b) => a.durata - b.durata);
+                if (pronti.length > 0) {
+                    let t = pronti[0]; 
+                    t.inizio = tempo; 
+                    t.fine = tempo + t.durata;
+                    t.turnaround = t.fine - t.arrivo; 
+                    t.attesa = t.turnaround - t.durata;
+                    tempo += t.durata; 
+                    completati.push(t);
+                } else tempo++;
+            }
+            return completati;
+        }
+
+        /* Algoritmo Round Robin */
+        function roundRobin(tasks, quantum) {
+            let rimanenti = {}; 
+            tasks.forEach(t => rimanenti[t.id] = t.durata);
+            let coda = [], tempo = 0, completati = new Set(), iniziati = new Set();
+            while (completati.size < tasks.length) {
+                for (let t of tasks) { 
+                    if (t.arrivo <= tempo && !coda.includes(t.id) && !completati.has(t.id)) coda.push(t.id); 
+                }
+                if (coda.length > 0) {
+                    let id = coda.shift(); 
+                    let t = tasks.find(x => x.id === id);
+                    if (!iniziati.has(id)) { 
+                        t.inizio = tempo; 
+                        iniziati.add(id); 
+                    }
+                    let esegui = Math.min(quantum, rimanenti[id]);
+                    tempo += esegui; 
+                    rimanenti[id] -= esegui;
+                    if (rimanenti[id] === 0) { 
+                        t.fine = tempo; 
+                        t.turnaround = t.fine - t.arrivo; 
+                        t.attesa = t.turnaround - t.durata; 
+                        completati.add(id); 
+                    }
+                    else coda.push(id);
+                } else tempo++;
+            }
+            return tasks;
+        }
+
+        /* Algoritmo Priority Scheduling */
+        function priorityScheduling(tasks) {
+            let completati = [], tempo = 0;
+            let rimanenti = tasks.map(t => ({ ...t }));
+            
+            while (completati.length < tasks.length) {
+                let pronti = rimanenti.filter(t => t.arrivo <= tempo && !completati.includes(t));
+                
+                if (pronti.length > 0) {
+                    // Ordina per priorità (più basso = più alta priorità)
+                    pronti.sort((a, b) => a.priorita - b.priorita);
+                    let t = pronti[0]; 
+                    t.inizio = tempo; 
+                    t.fine = tempo + t.durata;
+                    t.turnaround = t.fine - t.arrivo; 
+                    t.attesa = t.turnaround - t.durata;
+                    tempo += t.durata; 
+                    completati.push(t);
+                } else {
+                    tempo++;
+                }
+            }
+            return completati;
+        }
+
+        /* Algoritmo Priority Round Robin */
+        function priorityRoundRobin(tasks, quantum) {
+            let rimanenti = {}; 
+            tasks.forEach(t => rimanenti[t.id] = t.durata);
+            
+            // Crea code separate per ogni livello di priorità
+            let codePerPriorita = {
+                1: [], // Alta priorità
+                2: [], // Media priorità
+                3: []  // Bassa priorità
+            };
+            
+            let tempo = 0, completati = new Set(), iniziati = new Set();
+            
+            while (completati.size < tasks.length) {
+                // Aggiungi task alle code appropriate in base all'arrivo
+                for (let t of tasks) { 
+                    if (t.arrivo <= tempo && !completati.has(t.id)) {
+                        let inCoda = false;
+                        // Controlla se il task è già in una delle code
+                        for (let priorita in codePerPriorita) {
+                            if (codePerPriorita[priorita].includes(t.id)) {
+                                inCoda = true;
+                                break;
+                            }
+                        }
+                        if (!inCoda) {
+                            codePerPriorita[t.priorita].push(t.id);
+                        }
+                    }
+                }
+                
+                // Trova il task con la priorità più alta che è pronto
+                let taskDaEseguire = null;
+                for (let priorita = 1; priorita <= 3; priorita++) {
+                    if (codePerPriorita[priorita].length > 0) {
+                        let id = codePerPriorita[priorita][0];
+                        taskDaEseguire = tasks.find(t => t.id === id);
+                        codePerPriorita[priorita].shift(); // Rimuovi dalla coda
+                        break;
+                    }
+                }
+                
+                if (taskDaEseguire) {
+                    let t = taskDaEseguire;
+                    if (!iniziati.has(t.id)) { 
+                        t.inizio = tempo; 
+                        iniziati.add(t.id); 
+                    }
+                    let esegui = Math.min(quantum, rimanenti[t.id]);
+                    tempo += esegui; 
+                    rimanenti[t.id] -= esegui;
+                    
+                    if (rimanenti[t.id] === 0) { 
+                        t.fine = tempo; 
+                        t.turnaround = t.fine - t.arrivo; 
+                        t.attesa = t.turnaround - t.durata; 
+                        completati.add(t.id); 
+                    } else {
+                        // Rimetti in coda con la stessa priorità
+                        codePerPriorita[t.priorita].push(t.id);
+                    }
+                } else {
+                    tempo++;
+                }
+            }
+            return tasks;
+        }
+
+        /* Simulazione e Aggiornamento */
+        let ganttChart;
+        function simula() {
+            if (taskList.length === 0) { 
+                alert("Aggiungi almeno un task!"); 
+                return; 
+            }
+            
+            let algoritmo = document.getElementById("algoritmo").value;
+            let quantum = parseInt(document.getElementById("quantum").value);
+            let tasks = JSON.parse(JSON.stringify(taskList));
+            let risultati;
+            
+            if (algoritmo === "FCFS") risultati = fcfs(tasks);
+            else if (algoritmo === "SJF") risultati = sjf(tasks);
+            else if (algoritmo === "RR") risultati = roundRobin(tasks, quantum);
+            else if (algoritmo === "Priority") risultati = priorityScheduling(tasks);
+            else if (algoritmo === "PriorityRR") risultati = priorityRoundRobin(tasks, quantum);
+
+            let tbody = document.querySelector("#tabellaRisultati tbody"); 
+            tbody.innerHTML = "";
+            risultati.forEach(t => { 
+                let priorityClass = '';
+                let priorityText = '';
+                
+                switch(t.priorita) {
+                    case 1:
+                        priorityClass = 'priority-high';
+                        priorityText = 'Alta';
+                        break;
+                    case 2:
+                        priorityClass = 'priority-medium';
+                        priorityText = 'Media';
+                        break;
+                    case 3:
+                        priorityClass = 'priority-low';
+                        priorityText = 'Bassa';
+                        break;
+                }
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>
+                            <span class="priority-indicator ${priorityClass}"></span>
+                            ${priorityText}
+                        </td>
+                        <td>${t.inizio}</td>
+                        <td>${t.fine}</td>
+                        <td>${t.turnaround}</td>
+                        <td>${t.attesa}</td>
+                    </tr>
+                `; 
+            });
+            
+            drawAnimatedGantt(risultati);
+        }
+
+        /* Grafico Gantt Animato */
+        function drawAnimatedGantt(tasks) {
+            const ctx = document.getElementById('ganttChart').getContext('2d');
+            if (ganttChart) ganttChart.destroy();
+            
+            // Ordinare per ID
+            tasks.sort((a, b) => a.id - b.id);
+            
+            // Generare colori per ogni task in base alla priorità
+            const colors = tasks.map(t => {
+                switch(t.priorita) {
+                    case 1: return 'rgba(255, 0, 110, 0.8)'; // Rosso per alta priorità
+                    case 2: return 'rgba(255, 170, 0, 0.8)'; // Arancione per media priorità
+                    case 3: return 'rgba(0, 255, 157, 0.8)'; // Verde per bassa priorità
+                    default: return 'rgba(0, 247, 255, 0.8)';
+                }
+            });
+            
+            ganttChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: tasks.map(t => `Task ${t.id} (P${t.priorita})`),
+                    datasets: [{
+                        label: 'Durata CPU',
+                        data: tasks.map(t => ({ x: t.inizio, x2: t.fine, y: t.id })),
+                        backgroundColor: colors,
+                        borderColor: colors.map(c => c.replace('0.8', '1')),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: { 
+                        x: { 
+                            beginAtZero: true, 
+                            title: { 
+                                display: true, 
+                                text: 'Tempo',
+                                color: '#eee'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#eee'
+                            }
+                        }, 
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { 
+                                color: '#eee' 
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        } 
+                    },
+                    responsive: true,
+                    plugins: { 
+                        legend: { 
+                            display: false 
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const task = tasks[context.dataIndex];
+                                    let priorityText = '';
+                                    switch(task.priorita) {
+                                        case 1: priorityText = 'Alta'; break;
+                                        case 2: priorityText = 'Media'; break;
+                                        case 3: priorityText = 'Bassa'; break;
+                                    }
+                                    return `Task ${task.id} (Priorità ${priorityText}): Inizio ${task.inizio}, Fine ${task.fine}`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        /* Esportazione JSON e Task Random */
+        function scaricaJSON() { 
+            const blob = new Blob([JSON.stringify(taskList, null, 2)], { type: 'application/json' }); 
+            const url = URL.createObjectURL(blob); 
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = 'quantum-core-tasks.json'; 
+            document.body.appendChild(a); 
+            a.click(); 
+            document.body.removeChild(a); 
+        }
+        
+        function simulazioneAutomatica() { 
+            const n = parseInt(document.getElementById("numRandom").value) || 5; 
+            taskList = []; 
+            for (let i = 1; i <= n; i++) { 
+                taskList.push({ 
+                    id: i, 
+                    arrivo: Math.floor(Math.random() * 10), 
+                    durata: Math.floor(Math.random() * 10) + 1,
+                    priorita: Math.floor(Math.random() * 3) + 1 // Priorità casuale 1-3
+                }); 
+            } 
+            aggiornaTabellaTask(); 
+            simula(); 
+        }
+    </script>
+</body>
+
+</html>
