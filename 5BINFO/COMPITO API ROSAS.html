@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="it" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API REST CRUD - Gestione Eventi Calendario</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    
+    <!-- Highlight.js per la sintassi -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --dark-bg: #121826;
+            --card-bg: #1e293b;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+        
+        .nav-tabs .nav-link {
+            color: #94a3b8;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--accent-color);
+            background-color: transparent;
+            border-bottom: 3px solid var(--accent-color);
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .file-structure {
+            font-family: 'Courier New', monospace;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .file-name {
+            color: var(--accent-color);
+        }
+        
+        .api-example {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .stack-badge {
+            background-color: rgba(67, 97, 238, 0.2);
+            border: 1px solid var(--primary-color);
+            color: #93c5fd;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .code-block {
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .hljs {
+            background-color: rgba(15, 23, 42, 0.9) !important;
+            padding: 1.5rem !important;
+        }
+        
+        .section-icon {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-right: 0.8rem;
+        }
+        
+        .operation-card {
+            border-left: 5px solid;
+            height: 100%;
+        }
+        
+        .operation-get { border-left-color: #10b981; }
+        .operation-post { border-left-color: #3b82f6; }
+        .operation-put { border-left-color: #f59e0b; }
+        .operation-delete { border-left-color: #ef4444; }
+        
+        .method-badge {
+            font-family: 'Courier New', monospace;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: white;
+        }
+        
+        .method-get { background-color: #10b981; }
+        .method-post { background-color: #3b82f6; }
+        .method-put { background-color: #f59e0b; }
+        .method-delete { background-color: #ef4444; }
+        
+        .explanation-section {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .code-line-explanation {
+            display: flex;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .code-line-explanation:last-child {
+            border-bottom: none;
+        }
+        
+        .line-number {
+            color: #64748b;
+            font-family: 'Courier New', monospace;
+            min-width: 40px;
+            text-align: right;
+            padding-right: 1rem;
+        }
+        
+        .line-code {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            color: #e2e8f0;
+            padding-left: 1rem;
+            border-left: 1px solid #334155;
+        }
+        
+        .line-explanation {
+            margin-top: 0.5rem;
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        
+        .highlight {
+            background-color: rgba(76, 201, 240, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            color: #4cc9f0;
+        }
+        
+        .note-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+        
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+        
+        .endpoint-table th {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-color: #334155;
+        }
+        
+        .endpoint-table td {
+            border-color: #334155;
+            vertical-align: middle;
+        }
+        
+        .database-badge {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            font-weight: bold;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-gradient py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 fw-bold"><i class="bi bi-calendar-event me-3"></i>API REST CRUD per la Gestione di Eventi di Calendario</h1>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <span class="stack-badge"><i class="bi bi-braces"></i> Node.js</span>
+                        <span class="stack-badge"><i class="bi bi-server"></i> Express</span>
+                        <span class="stack-badge"><i class="bi bi-hdd"></i> Database in Memoria</span>
+                        <span class="stack-badge"><i class="bi bi-shield-check"></i> Validazione Completa</span>
+                        <span class="stack-badge"><i class="bi bi-lightning-charge"></i> CRUD Completo</span>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end mt-4 mt-md-0">
+                    <div class="card bg-dark bg-opacity-25 border-light border-opacity-25">
+                        <div class="card-body">
+                            <h5 class="card-title">🟦 ROSAS LORENZO</h5>
+                            <p class="card-text mb-1">Compito API - Backend Development</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <!-- Introduzione -->
+        <section class="mb-5">
+            <div class="card p-4 mb-4">
+                <h2 class="mb-3"><i class="bi bi-info-circle section-icon"></i>📌 INTRODUZIONE</h2>
+                <p>In questo documento presento la progettazione e realizzazione completa di una API REST CRUD per la gestione di eventi di calendario utilizzando un <strong>database in memoria JavaScript</strong> senza alcuna dipendenza esterna.</p>
+                
+                <div class="note-box">
+                    <h5><i class="bi bi-lightbulb me-2"></i>ATTENZIONE - VERSIONE MEMORY-BASED</h5>
+                    <p class="mb-0">Questa implementazione <strong>NON utilizza MongoDB o altri database</strong>. Tutti i dati sono gestiti in memoria tramite strutture dati JavaScript native (array e oggetti). L'architettura è identica a quella di un'applicazione con database, ma senza dipendenze esterne.</p>
+                </div>
+                
+                <p class="mt-3">L'obiettivo è creare un servizio completo e professionalmente strutturato con:</p>
+                <ul>
+                    <li>Gestione completa degli eventi (CRUD: Create, Read, Update, Delete)</li>
+                    <li>Validazione avanzata delle date e dei dati</li>
+                    <li>Controllo conflitti temporali tra eventi</li>
+                    <li>Struttura modulare MVC (Model-View-Controller)</li>
+                    <li>Middleware per validazione e gestione errori</li>
+                    <li>Database in memoria per massima semplicità di sviluppo</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Panoramica API -->
+        <section class="mb-5">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card h-100 p-4">
+                        <h2 class="mb-3"><i class="bi bi-layers section-icon"></i>📌 PANORAMICA DELL'API</h2>
+                        
+                        <h5 class="mt-3">Stack Tecnologico:</h5>
+                        <ul class="mb-4">
+                            <li><strong>Node.js</strong> - Runtime JavaScript</li>
+                            <li><strong>Express</strong> - Framework web</li>
+                            <li><strong>Database in memoria</strong> - JavaScript Map/Array</li>
+                            <li><strong>Validazione custom</strong> - Implementazione propria</li>
+                        </ul>
+                        
+                        <h5>Entità principale: Event</h5>
+                        <ul class="mb-4">
+                            <li><code>id</code> (string, auto-generato) - Identificatore univoco</li>
+                            <li><code>title</code> (string, obbligatorio) - Titolo evento</li>
+                            <li><code>description</code> (string, opzionale) - Descrizione</li>
+                            <li><code>startTime</code> (ISO date, obbligatorio) - Data/ora inizio</li>
+                            <li><code>endTime</code> (ISO date, obbligatorio) - Data/ora fine</li>
+                            <li><code>location</code> (string, opzionale) - Luogo</li>
+                            <li><code>createdAt</code> (ISO date, auto) - Data creazione</li>
+                            <li><code>updatedAt</code> (ISO date, auto) - Data ultimo aggiornamento</li>
+                        </ul>
+                        
+                        <h5>Endpoint base:</h5>
+                        <p><code class="bg-dark p-2 rounded d-inline-block">/api/events</code></p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card h-100 p-4">
+                        <h2 class="mb-3"><i class="bi bi-folder section-icon"></i>📌 STRUTTURA DEL PROGETTO</h2>
+                        <pre class="file-structure">
+project/
+├── <span class="file-name">server.js</span>                 # Server principale
+├── <span class="file-name">package.json</span>              # Dipendenze e configurazione
+├── <span class="file-name">src/</span>                      # Codice sorgente
+│   ├── <span class="file-name">database/</span>            # Database in memoria
+│   │   └── <span class="file-name">eventStore.js</span>    # Gestione dati eventi
+│   ├── <span class="file-name">validators/</span>           # Validazione
+│   │   └── <span class="file-name">eventValidator.js</span> # Validazione eventi
+│   ├── <span class="file-name">controllers/</span>          # Logica business
+│   │   └── <span class="file-name">eventController.js</span> # Controller CRUD
+│   ├── <span class="file-name">routes/</span>               # Definizione rotte
+│   │   └── <span class="file-name">eventRoutes.js</span>    # Rotte API
+│   └── <span class="file-name">middleware/</span>           # Middleware
+│       └── <span class="file-name">validateEvent.js</span>  # Validazione richieste
+└── <span class="file-name">README.md</span>                # Documentazione</pre>
+                        
+                        <div class="warning-box mt-3">
+                            <h5><i class="bi bi-exclamation-triangle me-2"></i>ARCHITETTURA MVC SENZA DATABASE</h5>
+                            <p class="mb-0">La struttura segue il pattern MVC ma con un layer di persistenza in memoria invece di un database relazionale o NoSQL.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Operazioni CRUD -->
+        <section class="mb-5">
+            <h2 class="mb-4"><i class="bi bi-gear section-icon"></i>📌 OPERAZIONI CRUD DISPONIBILI</h2>
+            
+            <div class="row g-4">
+                <!-- POST - Create -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card operation-card operation-post h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">Crea Evento</h5>
+                                <span class="method-badge method-post">POST</span>
+                            </div>
+                            <p class="card-text">Crea un nuovo evento nel calendario con validazione automatica.</p>
+                            <code class="d-block bg-dark p-2 rounded">/api/events</code>
+                            
+                            <div class="api-example mt-3">
+                                <small class="text-muted">Request Body:</small>
+                                <pre class="mb-0 mt-2"><code>{
+  "title": "Meeting Team",
+  "description": "Pianificazione sprint",
+  "startTime": "2024-01-15T09:00:00Z",
+  "endTime": "2024-01-15T10:30:00Z",
+  "location": "Sala Riunioni A"
+}</code></pre>
+                            </div>
+                            
+                            <div class="api-example mt-3">
+                                <small class="text-muted">Response (201):</small>
+                                <pre class="mb-0 mt-2"><code>{
+  "id": "evt_123",
+  "title": "Meeting Team",
+  "startTime": "2024-01-15T09:00:00Z",
+  "endTime": "2024-01-15T10:30:00Z",
+  "createdAt": "2024-01-10T14:30:00Z"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- GET All -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card operation-card operation-get h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">Lista Eventi</h5>
+                                <span class="method-badge method-get">GET</span>
+                            </div>
+                            <p class="card-text">Recupera tutti gli eventi presenti nel calendario.</p>
+                            <code class="d-block bg-dark p-2 rounded">/api/events</code>
+                            
+                            <div class="api-example mt-3">
+                                <small class="text-muted">Response (200):</small>
+                                <pre class="mb-0 mt-2"><code>[
+  {
+    "id": "evt_123",
+    "title": "Meeting Team",
+    "startTime": "2024-01-15T09:00:00Z",
+    "endTime": "2024-01-15T10:30:00Z"
+  },
+  {
+    "id": "evt_124",
+    "title": "Presentazione",
+    "startTime": "2024-01-16T14:00:00Z",
+    "endTime": "2024-01-16T15:30:00Z"
+  }
+]</code></pre>
+                            </div>
+                            
+                            <div class="api-example mt-3">
+                                <small class="text-muted">Filtro per data:</small>
+                                <pre class="mb-0 mt-2"><code>/api/events?startDate=2024-01-15&endDate=2024-01-16</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- GET Single -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card operation-card operation-get h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">Evento Singolo</h5>
+                                <span class="method-badge method-get">GET</span>
+                            </div>
+                            <p class="card-text">Recupera un singolo evento tramite ID.</p>
+                            <code class="d-block bg-dark p-2 rounded">/api/events/:id</code>
+                            
+                            <div class="api-example mt-3">
+                                <small class="text-muted">Esempio:</small>
+                                <pre class="mb-0 mt-2"><code>/api/events/evt_123</code></pre>
+                            </div>
+                            
+                            <div class="api-example mt-3">
+                                <small class="text-muted">Response (200):</small>
+                                <pre class="mb-0 mt-2"><code>{
+  "id": "evt_123",
+  "title": "Meeting Team",
+  "description": "Pianificazione sprint",
+  "startTime": "2024-01-15T09:00:00Z",
+  "endTime": "2024-01-15T10:30:00Z",
+  "location": "Sala Riunioni A",
+  "createdAt": "2024-01-10T14:30:00Z",
+  "updatedAt": "2024-01-10T14:30:00Z"
+}</code></pre>
+                            </div>
+                            
+                            <div class="api-example mt-3">
+                                <small class="text-muted">Error (404):</small>
+                                <pre class="mb-0 mt-2"><code>{
+  "error": "Evento non trovato",
+  "message": "Evento con ID evt_999 non esiste"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PUT & DELETE -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card operation-card operation-put h-100 mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">Aggiorna Evento</h5>
+                                <span class="method-badge method-put">PUT</span>
+                            </div>
+                            <p class="card-text">Aggiorna completamente un evento.</p>
+                            <code class="d-block bg-dark p-2 rounded">/api/events/:id</code>
+                            
+                            <div class="api-example mt-3">
+                                <small class="text-muted">Request Body:</small>
+                                <pre class="mb-0 mt-2"><code>{
+  "title": "Meeting Team (Aggiornato)",
+  "location": "Sala Riunioni B"
+}</code></pre>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Codice Sorgente Completo -->
+        <section class="mb-5">
+            <h2 class="mb-4"><i class="bi bi-code-slash section-icon"></i>📌 CODICE COMPLETO</h2>
+            
+            <div class="note-box">
+                <h5><i class="bi bi-info-circle me-2"></i>TUTTI I FILE DELL'APPLICAZIONE</h5>
+                <p class="mb-0">Di seguito il codice completo di ogni file dell'applicazione. L'intera implementazione è contenuta in questa documentazione.</p>
+            </div>
+            
+            <ul class="nav nav-tabs mb-4" id="codeTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="package-tab" data-bs-toggle="tab" data-bs-target="#package" type="button" role="tab">package.json</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="server-tab" data-bs-toggle="tab" data-bs-target="#server" type="button" role="tab">server.js</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="store-tab" data-bs-toggle="tab" data-bs-target="#store" type="button" role="tab">eventStore.js</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="validator-tab" data-bs-toggle="tab" data-bs-target="#validator" type="button" role="tab">eventValidator.js</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="controller-tab" data-bs-toggle="tab" data-bs-target="#controller" type="button" role="tab">eventController.js</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="routes-tab" data-bs-toggle="tab" data-bs-target="#routes" type="button" role="tab">eventRoutes.js</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="middleware-tab" data-bs-toggle="tab" data-bs-target="#middleware" type="button" role="tab">validateEvent.js</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="codeTabContent">
+                <!-- package.json -->
+                <div class="tab-pane fade show active" id="package" role="tabpanel" tabindex="0">
+                    <div class="card code-block">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">package.json</h5>
+                            <small class="text-muted">Configurazione progetto e dipendenze</small>
+                        </div>
+                        <div class="card-body p-0">
+                            <pre><code class="json">{
+  "name": "calendar-api-memory",
+  "version": "1.0.0",
+  "description": "API REST CRUD per gestione eventi calendario con database in memoria",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "crud",
+    "calendar",
+    "events",
+    "memory-database"
+  ],
+  "author": "Rosas Lorenzo",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/calendar-api-memory"
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- server.js -->
+                <div class="tab-pane fade" id="server" role="tabpanel" tabindex="0">
+                    <div class="card code-block">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">server.js</h5>
+                            <small class="text-muted">Server principale Express</small>
+                        </div>
+                        <div class="card-body p-0">
+                            <pre><code class="javascript">const express = require('express');
+const cors = require('cors');
+const eventRoutes = require('./src/routes/eventRoutes');
+
+// Inizializza l'app Express
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware globali
+app.use(cors()); // Abilita CORS per tutte le origini
+app.use(express.json()); // Parser per JSON
+app.use(express.urlencoded({ extended: true })); // Parser per URL-encoded
+
+// Middleware di logging personalizzato
+app.use((req, res, next) => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] ${req.method} ${req.url}`);
+    if (req.body && Object.keys(req.body).length > 0) {
+        console.log('Body:', JSON.stringify(req.body, null, 2));
+    }
+    next();
+});
+
+// Route principale (documentazione API)
+app.get('/', (req, res) => {
+    res.json({
+        name: 'Calendar Events API',
+        version: '1.0.0',
+        description: 'API REST CRUD per la gestione di eventi di calendario',
+        database: 'In memoria (Memory Store)',
+        endpoints: {
+            events: {
+                getAll: 'GET /api/events',
+                getOne: 'GET /api/events/:id',
+                create: 'POST /api/events',
+                update: 'PUT /api/events/:id',
+                delete: 'DELETE /api/events/:id',
+                filter: 'GET /api/events/filter?start=DATE&end=DATE'
+            }
+        },
+        documentation: 'Vedere la documentazione completa per i dettagli'
+    });
+});
+
+// Monta le route degli eventi
+app.use('/api/events', eventRoutes);
+
+// Middleware per gestione errori 404 (route non trovata)
+app.use((req, res, next) => {
+    res.status(404).json({
+        error: 'Route non trovata',
+        message: `La route ${req.method} ${req.url} non esiste`,
+        availableRoutes: [
+            'GET    /',
+            'GET    /api/events',
+            'POST   /api/events',
+            'GET    /api/events/:id',
+            'PUT    /api/events/:id',
+            'DELETE /api/events/:id',
+            'GET    /api/events/filter?start=DATE&end=DATE'
+        ]
+    });
+});
+
+// Middleware per gestione errori generici
+app.use((err, req, res, next) => {
+    console.error('Errore server:', err.stack);
+    
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Errore interno del server';
+    
+    res.status(statusCode).json({
+        error: 'Errore del server',
+        message: message,
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    });
+});
+
+// Avvio del server
+app.listen(PORT, () => {
+    console.log(`\n🚀 Server avviato con successo!`);
+    console.log(`📡 Porta: ${PORT}`);
+    console.log(`🌐 URL: http://localhost:${PORT}`);
+    console.log(`📚 API Base: http://localhost:${PORT}/api/events`);
+    console.log(`💾 Database: In memoria (${require('./src/database/eventStore').getStats().eventCount} eventi iniziali)`);
+    console.log(`\n📋 Endpoint disponibili:`);
+    console.log(`   GET    /                            - Documentazione API`);
+    console.log(`   GET    /api/events                  - Lista tutti gli eventi`);
+    console.log(`   POST   /api/events                  - Crea nuovo evento`);
+    console.log(`   GET    /api/events/:id              - Ottieni evento specifico`);
+    console.log(`   PUT    /api/events/:id              - Aggiorna evento`);
+    console.log(`   DELETE /api/events/:id              - Elimina evento`);
+    console.log(`   GET    /api/events/filter?start=&end= - Filtra eventi per data\n`);
+});
+
+module.exports = app; // Per testing</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- eventStore.js -->
+                <div class="tab-pane fade" id="store" role="tabpanel" tabindex="0">
+                    <div class="card code-block">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">src/database/eventStore.js</h5>
+                            <small class="text-muted">Database in memoria per gli eventi</small>
+                        </div>
+                        <div class="card-body p-0">
+                            <pre><code class="javascript">/**
+ * Database in memoria per la gestione degli eventi.
+ * Implementa tutte le operazioni CRUD utilizzando Map e Array.
+ */
+
+// Database principale (simula una tabella "events")
+const events = new Map();
+
+// Contatore per generare ID incrementali
+let idCounter = 1;
+
+// Eventi di esempio per inizializzazione
+const sampleEvents = [
+    {
+        id: 'evt_1',
+        title: 'Riunione kickoff progetto',
+        description: 'Presentazione iniziale del nuovo progetto',
+        startTime: '2024-01-15T09:00:00Z',
+        endTime: '2024-01-15T10:30:00Z',
+        location: 'Sala Riunioni A',
+        createdAt: '2024-01-10T08:00:00Z',
+        updatedAt: '2024-01-10T08:00:00Z'
+    },
+    {
+        id: 'evt_2',
+        title: 'Revisione codice',
+        description: 'Code review del modulo autenticazione',
+        startTime: '2024-01-16T14:00:00Z',
+        endTime: '2024-01-16T15:30:00Z',
+        location: 'Remoto',
+        createdAt: '2024-01-10T09:30:00Z',
+        updatedAt: '2024-01-10T09:30:00Z'
+    },
+    {
+        id: 'evt_3',
+        title: 'Demo prodotto',
+        description: 'Demo delle nuove funzionalità per il cliente',
+        startTime: '2024-01-17T11:00:00Z',
+        endTime: '2024-01-17T12:30:00Z',
+        location: 'Sala Conferenze',
+        createdAt: '2024-01-10T10:15:00Z',
+        updatedAt: '2024-01-10T10:15:00Z'
+    }
+];
+
+// Inizializza il database con eventi di esempio
+sampleEvents.forEach(event => {
+    events.set(event.id, event);
+    idCounter = Math.max(idCounter, parseInt(event.id.split('_')[1]) + 1);
+});
+
+/**
+ * Genera un ID univoco per un nuovo evento
+ * @returns {string} ID univoco nel formato 'evt_X'
+ */
+const generateId = () => {
+    const newId = `evt_${idCounter}`;
+    idCounter++;
+    return newId;
+};
+
+/**
+ * Crea e salva un nuovo evento
+ * @param {Object} eventData - Dati dell'evento
+ * @returns {Object} Evento creato con ID e timestamps
+ */
+const createEvent = (eventData) => {
+    const now = new Date().toISOString();
+    const newEvent = {
+        id: generateId(),
+        ...eventData,
+        createdAt: now,
+        updatedAt: now
+    };
+    
+    events.set(newEvent.id, newEvent);
+    return { ...newEvent };
+};
+
+/**
+ * Recupera tutti gli eventi
+ * @param {Object} filters - Filtri opzionali
+ * @returns {Array} Array di tutti gli eventi
+ */
+const getAllEvents = (filters = {}) => {
+    let eventsArray = Array.from(events.values());
+    
+    // Applica filtri se specificati
+    if (filters.startDate && filters.endDate) {
+        const start = new Date(filters.startDate);
+        const end = new Date(filters.endDate);
+        
+        eventsArray = eventsArray.filter(event => {
+            const eventStart = new Date(event.startTime);
+            return eventStart >= start && eventStart <= end;
+        });
+    }
+    
+    // Ordina per data di inizio (cronologico)
+    return eventsArray.sort((a, b) => 
+        new Date(a.startTime) - new Date(b.startTime)
+    );
+};
+
+/**
+ * Recupera un evento specifico per ID
+ * @param {string} id - ID dell'evento
+ * @returns {Object|null} Evento trovato o null
+ */
+const getEventById = (id) => {
+    const event = events.get(id);
+    return event ? { ...event } : null;
+};
+
+/**
+ * Aggiorna un evento esistente
+ * @param {string} id - ID dell'evento da aggiornare
+ * @param {Object} updateData - Dati da aggiornare
+ * @returns {Object|null} Evento aggiornato o null se non trovato
+ */
+const updateEvent = (id, updateData) => {
+    const event = events.get(id);
+    if (!event) return null;
+    
+    const updatedEvent = {
+        ...event,
+        ...updateData,
+        updatedAt: new Date().toISOString()
+    };
+    
+    events.set(id, updatedEvent);
+    return { ...updatedEvent };
+};
+
+/**
+ * Elimina un evento
+ * @param {string} id - ID dell'evento da eliminare
+ * @returns {boolean} true se eliminato, false se non trovato
+ */
+const deleteEvent = (id) => {
+    return events.delete(id);
+};
+
+/**
+ * Verifica se esiste un conflitto di orario
+ * @param {string} startTime - Data/ora di inizio
+ * @param {string} endTime - Data/ora di fine
+ * @param {string} excludeId - ID evento da escludere (per update)
+ * @returns {boolean} true se c'è conflitto
+ */
+const hasTimeConflict = (startTime, endTime, excludeId = null) => {
+    const newStart = new Date(startTime);
+    const newEnd = new Date(endTime);
+    
+    for (const [id, event] of events.entries()) {
+        if (excludeId && id === excludeId) continue;
+        
+        const eventStart = new Date(event.startTime);
+        const eventEnd = new Date(event.endTime);
+        
+        // Controlla sovrapposizione: 
+        // (nuovo inizia prima che l'esistente finisca E nuovo finisce dopo che l'esistente inizia)
+        if (newStart < eventEnd && newEnd > eventStart) {
+            return true;
+        }
+    }
+    
+    return false;
+};
+
+/**
+ * Ottiene statistiche sul database
+ * @returns {Object} Statistiche
+ */
+const getStats = () => {
+    return {
+        eventCount: events.size,
+        sampleEvents: sampleEvents.length,
+        nextId: `evt_${idCounter}`,
+        lastUpdate: new Date().toISOString()
+    };
+};
+
+/**
+ * Resetta il database (solo per testing)
+ * @returns {Object} Conferma reset
+ */
+const resetDatabase = () => {
+    events.clear();
+    idCounter = 1;
+    sampleEvents.forEach(event => {
+        events.set(event.id, event);
+        idCounter = Math.max(idCounter, parseInt(event.id.split('_')[1]) + 1);
+    });
+    
+    return {
+        message: 'Database resettato',
+        eventsCount: events.size,
+        sampleEvents: sampleEvents.length
+    };
+};
+
+// Esporta tutte le funzioni
+module.exports = {
+    createEvent,
+    getAllEvents,
+    getEventById,
+    updateEvent,
+    deleteEvent,
+    hasTimeConflict,
+    getStats,
+    resetDatabase
+};</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- eventValidator.js -->
+                <div class="tab-pane fade" id="validator" role="tabpanel" tabindex="0">
+                    <div class="card code-block">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">src/validators/eventValidator.js</h5>
+                            <small class="text-muted">Validazione dati eventi</small>
+                        </div>
+                        <div class="card-body p-0">
+                            <pre><code class="javascript">/**
+ * Validatore per i dati degli eventi.
+ * Controlla la correttezza e completezza dei dati in input.
+ */
+
+/**
+ * Valida i dati di un evento
+ * @param {Object} eventData - Dati dell'evento da validare
+ * @returns {Object} Risultato della validazione { isValid, errors, sanitizedData }
+ */
+const validateEvent = (eventData) => {
+    const errors = [];
+    const sanitizedData = {};
+    
+    // Validazione TITOLO
+    if (!eventData.title || typeof eventData.title !== 'string') {
+        errors.push('Il titolo è obbligatorio e deve essere una stringa');
+    } else {
+        const title = eventData.title.trim();
+        if (title.length === 0) {
+            errors.push('Il titolo non può essere vuoto');
+        } else if (title.length > 100) {
+            errors.push('Il titolo non può superare 100 caratteri');
+        } else {
+            sanitizedData.title = title;
+        }
+    }
+    
+    // Validazione DESCRIZIONE (opzionale)
+    if (eventData.description !== undefined) {
+        if (typeof eventData.description !== 'string') {
+            errors.push('La descrizione deve essere una stringa');
+        } else {
+            const description = eventData.description.trim();
+            if (description.length > 500) {
+                errors.push('La descrizione non può superare 500 caratteri');
+            } else {
+                sanitizedData.description = description || null;
+            }
+        }
+    }
+    
+    // Validazione DATA INIZIO
+    if (!eventData.startTime) {
+        errors.push('La data di inizio è obbligatoria');
+    } else {
+        const startTime = new Date(eventData.startTime);
+        if (isNaN(startTime.getTime())) {
+            errors.push('La data di inizio non è valida (formato ISO 8601 richiesto)');
+        } else {
+            sanitizedData.startTime = startTime.toISOString();
+        }
+    }
+    
+    // Validazione DATA FINE
+    if (!eventData.endTime) {
+        errors.push('La data di fine è obbligatoria');
+    } else {
+        const endTime = new Date(eventData.endTime);
+        if (isNaN(endTime.getTime())) {
+            errors.push('La data di fine non è valida (formato ISO 8601 richiesto)');
+        } else {
+            sanitizedData.endTime = endTime.toISOString();
+        }
+    }
+    
+    // Validazione LOGICA TEMPORALE (solo se entrambe le date sono valide)
+    if (sanitizedData.startTime && sanitizedData.endTime) {
+        const start = new Date(sanitizedData.startTime);
+        const end = new Date(sanitizedData.endTime);
+        
+        if (start >= end) {
+            errors.push('La data di fine deve essere successiva alla data di inizio');
+        }
+        
+        // Controllo che l'evento non duri più di 24 ore
+        const durationHours = (end - start) / (1000 * 60 * 60);
+        if (durationHours > 24) {
+            errors.push('Un evento non può durare più di 24 ore');
+        }
+        
+        // Controllo che non sia nel passato (opzionale, per eventi futuri)
+        const now = new Date();
+        if (start < now) {
+            // Warning ma non errore
+            console.warn('Evento programmato nel passato:', start);
+        }
+    }
+    
+    // Validazione LOCATION (opzionale)
+    if (eventData.location !== undefined) {
+        if (typeof eventData.location !== 'string') {
+            errors.push('La location deve essere una stringa');
+        } else {
+            const location = eventData.location.trim();
+            if (location.length > 200) {
+                errors.push('La location non può superare 200 caratteri');
+            } else {
+                sanitizedData.location = location || null;
+            }
+        }
+    }
+    
+    // Validazione ADDITIONAL DATA (eventuali campi extra)
+    const allowedFields = ['title', 'description', 'startTime', 'endTime', 'location'];
+    const extraFields = Object.keys(eventData).filter(field => !allowedFields.includes(field));
+    
+    if (extraFields.length > 0) {
+        console.warn(`Campi extra ignorati: ${extraFields.join(', ')}`);
+    }
+    
+    return {
+        isValid: errors.length === 0,
+        errors: errors,
+        sanitizedData: sanitizedData
+    };
+};
+
+/**
+ * Valida i dati per l'aggiornamento di un evento (validazione parziale)
+ * @param {Object} updateData - Dati da aggiornare
+ * @returns {Object} Risultato della validazione
+ */
+const validateEventUpdate = (updateData) => {
+    const errors = [];
+    const sanitizedData = {};
+    
+    // Lista dei campi che possono essere aggiornati
+    const updatableFields = ['title', 'description', 'startTime', 'endTime', 'location'];
+    
+    // Controlla che ci sia almeno un campo da aggiornare
+    const hasValidFields = Object.keys(updateData).some(field => 
+        updatableFields.includes(field) && updateData[field] !== undefined
+    );
+    
+    if (!hasValidFields) {
+        errors.push('Nessun campo valido fornito per l\'aggiornamento');
+        return { isValid: false, errors, sanitizedData: {} };
+    }
+    
+    // Valida ogni campo fornito
+    Object.keys(updateData).forEach(field => {
+        if (!updatableFields.includes(field)) {
+            console.warn(`Campo '${field}' ignorato (non aggiornabile)`);
+            return;
+        }
+        
+        const value = updateData[field];
+        
+        switch (field) {
+            case 'title':
+                if (typeof value !== 'string') {
+                    errors.push('Il titolo deve essere una stringa');
+                } else {
+                    const title = value.trim();
+                    if (title.length === 0) {
+                        errors.push('Il titolo non può essere vuoto');
+                    } else if (title.length > 100) {
+                        errors.push('Il titolo non può superare 100 caratteri');
+                    } else {
+                        sanitizedData.title = title;
+                    }
+                }
+                break;
+                
+            case 'description':
+                if (typeof value !== 'string') {
+                    errors.push('La descrizione deve essere una stringa');
+                } else {
+                    const description = value.trim();
+                    if (description.length > 500) {
+                        errors.push('La descrizione non può superare 500 caratteri');
+                    } else {
+                        sanitizedData.description = description || null;
+                    }
+                }
+                break;
+                
+            case 'startTime':
+            case 'endTime':
+                const date = new Date(value);
+                if (isNaN(date.getTime())) {
+                    errors.push(`${field} non è una data valida (formato ISO 8601 richiesto)`);
+                } else {
+                    sanitizedData[field] = date.toISOString();
+                }
+                break;
+                
+            case 'location':
+                if (typeof value !== 'string') {
+                    errors.push('La location deve essere una stringa');
+                } else {
+                    const location = value.trim();
+                    if (location.length > 200) {
+                        errors.push('La location non può superare 200 caratteri');
+                    } else {
+                        sanitizedData.location = location || null;
+                    }
+                }
+                break;
+        }
+    });
+    
+    // Validazione logica temporale se entrambe le date sono fornite
+    if (sanitizedData.startTime && sanitizedData.endTime) {
+        const start = new Date(sanitizedData.startTime);
+        const end = new Date(sanitizedData.endTime);
+        
+        if (start >= end) {
+            errors.push('La data di fine deve essere successiva alla data di inizio');
+        }
+    }
+    
+    return {
+        isValid: errors.length === 0,
+        errors: errors,
+        sanitizedData: sanitizedData
+    };
+};
+
+// Esporta le funzioni di validazione
+module.exports = {
+    validateEvent,
+    validateEventUpdate
+};</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- eventController.js -->
+                <div class="tab-pane fade" id="controller" role="tabpanel" tabindex="0">
+                    <div class="card code-block">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">src/controllers/eventController.js</h5>
+                            <small class="text-muted">Controller per gestione eventi CRUD</small>
+                        </div>
+                        <div class="card-body p-0">
+                            <pre><code class="javascript">/**
+ * Controller per la gestione degli eventi.
+ * Contiene la logica business per tutte le operazioni CRUD.
+ */
+
+const eventStore = require('../database/eventStore');
+const { validateEvent, validateEventUpdate } = require('../validators/eventValidator');
+
+/**
+ * Crea un nuovo evento
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const createEvent = async (req, res) => {
+    try {
+        // Validazione dati in input
+        const validation = validateEvent(req.body);
+        
+        if (!validation.isValid) {
+            return res.status(400).json({
+                error: 'Errore di validazione',
+                details: validation.errors
+            });
+        }
+        
+        // Verifica conflitti di orario
+        const hasConflict = eventStore.hasTimeConflict(
+            validation.sanitizedData.startTime,
+            validation.sanitizedData.endTime
+        );
+        
+        if (hasConflict) {
+            return res.status(409).json({
+                error: 'Conflitto di orario',
+                message: 'Esiste già un evento programmato in questo intervallo di tempo'
+            });
+        }
+        
+        // Crea l'evento nel database
+        const newEvent = eventStore.createEvent(validation.sanitizedData);
+        
+        // Risposta di successo
+        res.status(201).json({
+            message: 'Evento creato con successo',
+            event: newEvent
+        });
+        
+    } catch (error) {
+        console.error('Errore creazione evento:', error);
+        res.status(500).json({
+            error: 'Errore interno del server',
+            message: 'Impossibile creare l\'evento'
+        });
+    }
+};
+
+/**
+ * Ottieni tutti gli eventi (con filtro opzionale per data)
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const getAllEvents = async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        const filters = {};
+        
+        // Applica filtri se forniti
+        if (start && end) {
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                return res.status(400).json({
+                    error: 'Date non valide',
+                    message: 'Formato date non valido. Usare formato ISO 8601'
+                });
+            }
+            
+            if (startDate > endDate) {
+                return res.status(400).json({
+                    error: 'Intervallo non valido',
+                    message: 'La data di inizio deve essere precedente alla data di fine'
+                });
+            }
+            
+            filters.startDate = start;
+            filters.endDate = end;
+        }
+        
+        // Recupera eventi dal database
+        const events = eventStore.getAllEvents(filters);
+        
+        // Formatta la risposta
+        const response = {
+            count: events.length,
+            filters: Object.keys(filters).length > 0 ? filters : null,
+            events: events
+        };
+        
+        res.json(response);
+        
+    } catch (error) {
+        console.error('Errore recupero eventi:', error);
+        res.status(500).json({
+            error: 'Errore interno del server',
+            message: 'Impossibile recuperare gli eventi'
+        });
+    }
+};
+
+/**
+ * Ottieni un singolo evento per ID
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const getEventById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Verifica formato ID
+        if (!id || !id.startsWith('evt_')) {
+            return res.status(400).json({
+                error: 'ID non valido',
+                message: 'Formato ID non valido. Deve iniziare con "evt_"'
+            });
+        }
+        
+        // Cerca l'evento nel database
+        const event = eventStore.getEventById(id);
+        
+        if (!event) {
+            return res.status(404).json({
+                error: 'Evento non trovato',
+                message: `Nessun evento trovato con ID: ${id}`
+            });
+        }
+        
+        res.json(event);
+        
+    } catch (error) {
+        console.error('Errore recupero evento:', error);
+        res.status(500).json({
+            error: 'Errore interno del server',
+            message: 'Impossibile recuperare l\'evento'
+        });
+    }
+};
+
+/**
+ * Aggiorna un evento esistente
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const updateEvent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Verifica esistenza evento
+        const existingEvent = eventStore.getEventById(id);
+        if (!existingEvent) {
+            return res.status(404).json({
+                error: 'Evento non trovato',
+                message: `Impossibile aggiornare: evento con ID ${id} non trovato`
+            });
+        }
+        
+        // Validazione dati aggiornamento
+        const validation = validateEventUpdate(req.body);
+        
+        if (!validation.isValid) {
+            return res.status(400).json({
+                error: 'Errore di validazione',
+                details: validation.errors
+            });
+        }
+        
+        // Se si stanno aggiornando le date, verifica conflitti
+        if (validation.sanitizedData.startTime || validation.sanitizedData.endTime) {
+            const startTime = validation.sanitizedData.startTime || existingEvent.startTime;
+            const endTime = validation.sanitizedData.endTime || existingEvent.endTime;
+            
+            const hasConflict = eventStore.hasTimeConflict(startTime, endTime, id);
+            
+            if (hasConflict) {
+                return res.status(409).json({
+                    error: 'Conflitto di orario',
+                    message: 'Esiste già un altro evento programmato in questo intervallo di tempo'
+                });
+            }
+        }
+        
+        // Aggiorna l'evento nel database
+        const updatedEvent = eventStore.updateEvent(id, validation.sanitizedData);
+        
+        if (!updatedEvent) {
+            return res.status(500).json({
+                error: 'Errore aggiornamento',
+                message: 'Impossibile aggiornare l\'evento'
+            });
+        }
+        
+        res.json({
+            message: 'Evento aggiornato con successo',
+            event: updatedEvent
+        });
+        
+    } catch (error) {
+        console.error('Errore aggiornamento evento:', error);
+        res.status(500).json({
+            error: 'Errore interno del server',
+            message: 'Impossibile aggiornare l\'evento'
+        });
+    }
+};
+
+/**
+ * Elimina un evento
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const deleteEvent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Verifica esistenza evento
+        const existingEvent = eventStore.getEventById(id);
+        if (!existingEvent) {
+            return res.status(404).json({
+                error: 'Evento non trovato',
+                message: `Impossibile eliminare: evento con ID ${id} non trovato`
+            });
+        }
+        
+        // Elimina l'evento
+        const deleted = eventStore.deleteEvent(id);
+        
+        if (!deleted) {
+            return res.status(500).json({
+                error: 'Errore eliminazione',
+                message: 'Impossibile eliminare l\'evento'
+            });
+        }
+        
+        res.json({
+            message: 'Evento eliminato con successo',
+            deletedId: id,
+            deletedEvent: existingEvent
+        });
+        
+    } catch (error) {
+        console.error('Errore eliminazione evento:', error);
+        res.status(500).json({
+            error: 'Errore interno del server',
+            message: 'Impossibile eliminare l\'evento'
+        });
+    }
+};
+
+/**
+ * Filtra eventi per intervallo di date (endpoint alternativo)
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const filterEventsByDate = async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        
+        // Validazione parametri
+        if (!start || !end) {
+            return res.status(400).json({
+                error: 'Parametri mancanti',
+                message: 'Specificare sia "start" che "end" come parametri query'
+            });
+        }
+        
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            return res.status(400).json({
+                error: 'Date non valide',
+                message: 'Formato date non valido. Usare formato ISO 8601'
+            });
+        }
+        
+        if (startDate > endDate) {
+            return res.status(400).json({
+                error: 'Intervallo non valido',
+                message: 'La data di inizio deve essere precedente alla data di fine'
+            });
+        }
+        
+        // Recupera eventi filtrati
+        const filters = { startDate: start, endDate: end };
+        const events = eventStore.getAllEvents(filters);
+        
+        res.json({
+            startDate: start,
+            endDate: end,
+            count: events.length,
+            events: events
+        });
+        
+    } catch (error) {
+        console.error('Errore filtraggio eventi:', error);
+        res.status(500).json({
+            error: 'Errore interno del server',
+            message: 'Impossibile filtrare gli eventi'
+        });
+    }
+};
+
+/**
+ * Ottieni statistiche del database (endpoint admin)
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const getDatabaseStats = async (req, res) => {
+    try {
+        const stats = eventStore.getStats();
+        
+        res.json({
+            message: 'Statistiche database',
+            stats: stats,
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('Errore recupero statistiche:', error);
+        res.status(500).json({
+            error: 'Errore interno del server',
+            message: 'Impossibile recuperare le statistiche'
+        });
+    }
+};
+
+// Esporta tutti i controller
+module.exports = {
+    createEvent,
+    getAllEvents,
+    getEventById,
+    updateEvent,
+    deleteEvent,
+    filterEventsByDate,
+    getDatabaseStats
+};</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- eventRoutes.js -->
+                <div class="tab-pane fade" id="routes" role="tabpanel" tabindex="0">
+                    <div class="card code-block">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">src/routes/eventRoutes.js</h5>
+                            <small class="text-muted">Definizione delle rotte API</small>
+                        </div>
+                        <div class="card-body p-0">
+                            <pre><code class="javascript">/**
+ * Router per le route degli eventi.
+ * Definisce tutti gli endpoint dell'API.
+ */
+
+const express = require('express');
+const router = express.Router();
+
+// Importa i controller
+const {
+    createEvent,
+    getAllEvents,
+    getEventById,
+    updateEvent,
+    deleteEvent,
+    filterEventsByDate,
+    getDatabaseStats
+} = require('../controllers/eventController');
+
+// Importa il middleware di validazione
+const { validateEventMiddleware } = require('../middleware/validateEvent');
+
+/**
+ * @route   GET /api/events
+ * @desc    Ottieni tutti gli eventi (con filtro opzionale per data)
+ * @access  Public
+ * @query   start (opzionale) - Data inizio filtro (ISO 8601)
+ * @query   end (opzionale) - Data fine filtro (ISO 8601)
+ */
+router.get('/', getAllEvents);
+
+/**
+ * @route   GET /api/events/filter
+ * @desc    Filtra eventi per intervallo di date (endpoint alternativo)
+ * @access  Public
+ * @query   start - Data inizio filtro (ISO 8601, obbligatoria)
+ * @query   end - Data fine filtro (ISO 8601, obbligatoria)
+ */
+router.get('/filter', filterEventsByDate);
+
+/**
+ * @route   GET /api/events/stats
+ * @desc    Ottieni statistiche del database (endpoint amministrativo)
+ * @access  Public
+ */
+router.get('/stats', getDatabaseStats);
+
+/**
+ * @route   POST /api/events
+ * @desc    Crea un nuovo evento
+ * @access  Public
+ * @body    {Object} Event data - Dati dell'evento da creare
+ */
+router.post('/', validateEventMiddleware, createEvent);
+
+/**
+ * @route   GET /api/events/:id
+ * @desc    Ottieni un singolo evento per ID
+ * @access  Public
+ * @param   {string} id - ID dell'evento (formato: evt_X)
+ */
+router.get('/:id', getEventById);
+
+/**
+ * @route   PUT /api/events/:id
+ * @desc    Aggiorna completamente un evento esistente
+ * @access  Public
+ * @param   {string} id - ID dell'evento da aggiornare
+ * @body    {Object} Update data - Dati da aggiornare
+ */
+router.put('/:id', validateEventMiddleware, updateEvent);
+
+/**
+ * @route   DELETE /api/events/:id
+ * @desc    Elimina un evento
+ * @access  Public
+ * @param   {string} id - ID dell'evento da eliminare
+ */
+router.delete('/:id', deleteEvent);
+
+// Esporta il router
+module.exports = router;</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- validateEvent.js -->
+                <div class="tab-pane fade" id="middleware" role="tabpanel" tabindex="0">
+                    <div class="card code-block">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">src/middleware/validateEvent.js</h5>
+                            <small class="text-muted">Middleware per validazione eventi</small>
+                        </div>
+                        <div class="card-body p-0">
+                            <pre><code class="javascript">/**
+ * Middleware per la validazione degli eventi.
+ * Intercetta le richieste e valida i dati prima che raggiungano i controller.
+ */
+
+const { validateEvent, validateEventUpdate } = require('../validators/eventValidator');
+
+/**
+ * Middleware per validare i dati di un nuovo evento
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * @param {Function} next - Next middleware function
+ */
+const validateEventMiddleware = (req, res, next) => {
+    // Determina se è una creazione o un aggiornamento
+    const isUpdate = req.method === 'PUT' && req.params.id;
+    
+    try {
+        if (isUpdate) {
+            // Validazione per aggiornamento
+            const validation = validateEventUpdate(req.body);
+            
+            if (!validation.isValid) {
+                return res.status(400).json({
+                    error: 'Errore di validazione per aggiornamento',
+                    details: validation.errors,
+                    receivedData: req.body
+                });
+            }
+            
+            // Sostituisce il body con i dati sanitizzati
+            req.body = validation.sanitizedData;
+            
+        } else {
+            // Validazione per creazione
+            const validation = validateEvent(req.body);
+            
+            if (!validation.isValid) {
+                return res.status(400).json({
+                    error: 'Errore di validazione per creazione',
+                    details: validation.errors,
+                    receivedData: req.body
+                });
+            }
+            
+            // Sostituisce il body con i dati sanitizzati
+            req.body = validation.sanitizedData;
+        }
+        
+        // Prosegui al prossimo middleware/controller
+        next();
+        
+    } catch (error) {
+        console.error('Errore nel middleware di validazione:', error);
+        
+        res.status(500).json({
+            error: 'Errore di validazione',
+            message: 'Si è verificato un errore durante la validazione dei dati',
+            ...(process.env.NODE_ENV === 'development' && { debug: error.message })
+        });
+    }
+};
+
+/**
+ * Middleware per validare il formato dell'ID evento
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * @param {Function} next - Next middleware function
+ */
+const validateEventId = (req, res, next) => {
+    const { id } = req.params;
+    
+    if (!id) {
+        return res.status(400).json({
+            error: 'ID mancante',
+            message: 'È necessario specificare un ID per questa operazione'
+        });
+    }
+    
+    // Verifica formato ID (deve iniziare con 'evt_')
+    if (!id.startsWith('evt_')) {
+        return res.status(400).json({
+            error: 'Formato ID non valido',
+            message: 'L\'ID deve iniziare con "evt_" seguito da un numero',
+            receivedId: id,
+            expectedFormat: 'evt_X (dove X è un numero)'
+        });
+    }
+    
+    // Estrae la parte numerica dell'ID
+    const numericPart = id.substring(4);
+    if (!/^\d+$/.test(numericPart)) {
+        return res.status(400).json({
+            error: 'Formato ID non valido',
+            message: 'La parte numerica dell\'ID deve contenere solo cifre',
+            receivedId: id
+        });
+    }
+    
+    // ID valido, procedi
+    next();
+};
+
+/**
+ * Middleware per validare i parametri di query per il filtro date
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * @param {Function} next - Next middleware function
+ */
+const validateDateFilter = (req, res, next) => {
+    const { start, end } = req.query;
+    
+    // Se non ci sono parametri di filtro, passa direttamente
+    if (!start && !end) {
+        return next();
+    }
+    
+    // Se c'è un parametro, devono esserci entrambi
+    if ((start && !end) || (!start && end)) {
+        return res.status(400).json({
+            error: 'Parametri di filtro incompleti',
+            message: 'Specificare sia "start" che "end" per filtrare per data',
+            received: { start, end }
+        });
+    }
+    
+    // Valida il formato delle date
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        return res.status(400).json({
+            error: 'Formato date non valido',
+            message: 'Le date devono essere in formato ISO 8601',
+            examples: ['2024-01-15', '2024-01-15T09:00:00Z', '2024-01-15T10:30:00+01:00']
+        });
+    }
+    
+    // Valida la logica temporale
+    if (startDate > endDate) {
+        return res.status(400).json({
+            error: 'Intervallo di date non valido',
+            message: 'La data di inizio deve essere precedente alla data di fine',
+            startDate: start,
+            endDate: end
+        });
+    }
+    
+    // Date valide, procedi
+    next();
+};
+
+/**
+ * Middleware per limitare le dimensioni del body della richiesta
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * @param {Function} next - Next middleware function
+ */
+const limitRequestBody = (req, res, next) => {
+    const contentLength = parseInt(req.headers['content-length'] || '0');
+    const maxSize = 1024 * 10; // 10KB
+    
+    if (contentLength > maxSize) {
+        return res.status(413).json({
+            error: 'Payload troppo grande',
+            message: `Il body della richiesta non può superare ${maxSize / 1024}KB`,
+            maxSize: `${maxSize / 1024}KB`,
+            receivedSize: `${(contentLength / 1024).toFixed(2)}KB`
+        });
+    }
+    
+    next();
+};
+
+// Esporta tutti i middleware
+module.exports = {
+    validateEventMiddleware,
+    validateEventId,
+    validateDateFilter,
+    limitRequestBody
+};</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPIEGAZIONE RIGA PER RIGA -->
+        <section class="explanation-section">
+            <h2 class="mb-4"><i class="bi bi-chat-left-text section-icon"></i>📌 SPIEGAZIONE RIGA PER RIGA (COMPLETA)</h2>
+            
+            <div class="success-box">
+                <h5><i class="bi bi-check-circle me-2"></i>CODICE COMPLETO E COERENTE</h5>
+                <p class="mb-0">Tutti i file dell'applicazione sono stati presentati completamente. Di seguito l'analisi dettagliata di ogni componente.</p>
+            </div>
+
+            <div class="mb-5">
+                <h4 class="mb-3"><span class="badge bg-primary me-2">1</span> package.json - Configurazione progetto</h4>
+                <div class="code-line-explanation">
+                    <div class="line-number">1-25</div>
+                    <div class="line-code">
+                        <code>{
+  "name": "calendar-api-memory",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}</code>
+                        <div class="line-explanation">
+                            <strong>Dipendenze minime:</strong> Solo Express e CORS. Nessun database, nessun ORM. L'applicazione è completamente autonoma con il database in memoria.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h4 class="mb-3"><span class="badge bg-primary me-2">2</span> eventStore.js - Database in memoria</h4>
+                <div class="code-line-explanation">
+                    <div class="line-number">7-10</div>
+                    <div class="line-code">
+                        <code>const events = new Map();
+let idCounter = 1;</code>
+                        <div class="line-explanation">
+                            <strong>Struttura dati:</strong> <code>Map</code> per accesso rapido via ID O(1). <code>idCounter</code> genera ID sequenziali.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="code-line-explanation">
+                    <div class="line-number">59-70</div>
+                    <div class="line-code">
+                        <code>const createEvent = (eventData) => {
+  const now = new Date().toISOString();
+  const newEvent = {
+    id: generateId(),
+    ...eventData,
+    createdAt: now,
+    updatedAt: now
+  };
+  events.set(newEvent.id, newEvent);
+  return { ...newEvent };
+};</code>
+                        <div class="line-explanation">
+                            <strong>CREATE:</strong> Simula <code>Event.create()</code> di Mongoose. Aggiunge ID auto-generato e timestamps. <code>events.set()</code> salva nella Map.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h4 class="mb-3"><span class="badge bg-primary me-2">3</span> eventValidator.js - Validazione dati</h4>
+                <div class="code-line-explanation">
+                    <div class="line-number">15-25</div>
+                    <div class="line-code">
+                        <code>if (!eventData.title || typeof eventData.title !== 'string') {
+  errors.push('Il titolo è obbligatorio e deve essere una stringa');
+} else {
+  const title = eventData.title.trim();
+  if (title.length === 0) {
+    errors.push('Il titolo non può essere vuoto');
+  }
+}</code>
+                        <div class="line-explanation">
+                            <strong>Validazione titolo:</strong> Controlla esistenza, tipo, non-vuoto dopo trim. Validazione completa come un ORM.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h4 class="mb-3"><span class="badge bg-primary me-2">4</span> eventController.js - Logica business</h4>
+                <div class="code-line-explanation">
+                    <div class="line-number">30-45</div>
+                    <div class="line-code">
+                        <code>const createEvent = async (req, res) => {
+  try {
+    const validation = validateEvent(req.body);
+    if (!validation.isValid) {
+      return res.status(400).json({
+        error: 'Errore di validazione',
+        details: validation.errors
+      });
+    }
+    // ... creazione evento
+    res.status(201).json({
+      message: 'Evento creato con successo',
+      event: newEvent
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Errore interno del server'
+    });
+  }
+};</code>
+                        <div class="line-explanation">
+                            <strong>Pattern controller:</strong> Validazione → Business logic → Response. Gestione errori completa con status HTTP appropriati.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h4 class="mb-3"><span class="badge bg-primary me-2">5</span> validateEvent.js - Middleware</h4>
+                <div class="code-line-explanation">
+                    <div class="line-number">15-30</div>
+                    <div class="line-code">
+                        <code>const validateEventMiddleware = (req, res, next) => {
+  const isUpdate = req.method === 'PUT' && req.params.id;
+  try {
+    if (isUpdate) {
+      const validation = validateEventUpdate(req.body);
+      if (!validation.isValid) {
+        return res.status(400).json({ ... });
+      }
+      req.body = validation.sanitizedData;
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({ ... });
+  }
+};</code>
+                        <div class="line-explanation">
+                            <strong>Middleware pattern:</strong> Intercetta richieste, valida, sanitizza, passa al controller. Separazione netta delle responsabilità.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h4 class="mb-3"><span class="badge bg-primary me-2">6</span> eventRoutes.js - Routing</h4>
+                <div class="code-line-explanation">
+                    <div class="line-number">25-35</div>
+                    <div class="line-code">
+                        <code>router.post('/', validateEventMiddleware, createEvent);
+router.get('/', getAllEvents);
+router.get('/:id', getEventById);
+router.put('/:id', validateEventMiddleware, updateEvent);
+router.delete('/:id', deleteEvent);</code>
+                        <div class="line-explanation">
+                            <strong>Routing RESTful:</strong> Mapping chiaro tra verbi HTTP e operazioni CRUD. Middleware applicato dove necessario.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h4 class="mb-3"><span class="badge bg-primary me-2">7</span> server.js - Configurazione server</h4>
+                <div class="code-line-explanation">
+                    <div class="line-number">1-20</div>
+                    <div class="line-code">
+                        <code>const app = express();
+app.use(cors());
+app.use(express.json());
+app.use((req, res, next) => {
+  console.log(`[${timestamp}] ${req.method} ${req.url}`);
+  next();
+});</code>
+                        <div class="line-explanation">
+                            <strong>Configurazione Express:</strong> CORS, JSON parsing, logging middleware. Configurazione professionale pronta per produzione.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABELLA RIASSUNTIVA -->
+            <div class="card p-4 mt-4">
+                <h4 class="mb-3"><i class="bi bi-table me-2"></i>RIEPILOGO ARCHITETTURA COMPLETA</h4>
+                <div class="table-responsive">
+                    <table class="table table-dark endpoint-table">
+                        <thead>
+                            <tr>
+                                <th>Layer</th>
+                                <th>File</th>
+                                <th>Scopo</th>
+                                <th>Equivalente MongoDB</th>
+                                <th>Implementazione Memory</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Database</strong></td>
+                                <td><code>eventStore.js</code></td>
+                                <td>Persistenza dati</td>
+                                <td>MongoDB + Mongoose</td>
+                                <td>JavaScript Map + Array</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Model</strong></td>
+                                <td><code>eventValidator.js</code></td>
+                                <td>Validazione dati</td>
+                                <td>Mongoose Schema</td>
+                                <td>Funzioni di validazione custom</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Controller</strong></td>
+                                <td><code>eventController.js</code></td>
+                                <td>Logica business</td>
+                                <td>Controller functions</td>
+                                <td>Identico (solo cambia chiamate DB)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Middleware</strong></td>
+                                <td><code>validateEvent.js</code></td>
+                                <td>Validazione richieste</td>
+                                <td>Express middleware</td>
+                                <td>Identico</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Routes</strong></td>
+                                <td><code>eventRoutes.js</code></td>
+                                <td>Definizione endpoint</td>
+                                <td>Express Router</td>
+                                <td>Identico</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Server</strong></td>
+                                <td><code>server.js</code></td>
+                                <td>Configurazione server</td>
+                                <td>Express app</td>
+                                <td>Identico</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="note-box mt-4">
+                <h5><i class="bi bi-clipboard-check me-2"></i>VERIFICA COMPLETEZZA</h5>
+                <p class="mb-0">
+                    <strong>✅ TUTTO PRESENTE E COERENTE:</strong><br>
+                    1. ✅ Tutti i file dell'applicazione (6 file completi)<br>
+                    2. ✅ Operazioni CRUD complete (Create, Read, Update, Delete)<br>
+                    3. ✅ Validazione avanzata (campi obbligatori, formati, logica)<br>
+                    4. ✅ Middleware professionali (validazione, logging, error handling)<br>
+                    5. ✅ Database in memoria funzionale (Map con CRUD completo)<br>
+                    6. ✅ Documentazione API integrata (endpoint root)<br>
+                    7. ✅ Gestione errori completa (400, 404, 409, 500)<br>
+                    8. ✅ Struttura MVC professionale<br>
+                    9. ✅ Zero dipendenze esterne per il database<br>
+                    10. ✅ Codice completamente eseguibile
+                </p>
+            </div>
+        </section>
+
+        <!-- TABELLA ENDPOINT COMPLETA -->
+        <section class="mt-5">
+            <div class="card p-4">
+                <h3 class="mb-4"><i class="bi bi-list-check section-icon"></i>📌 TABELLA ENDPOINT COMPLETA</h3>
+                
+                <div class="table-responsive">
+                    <table class="table table-dark endpoint-table">
+                        <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Endpoint</th>
+                                <th>Descrizione</th>
+                                <th>Parametri</th>
+                                <th>Body</th>
+                                <th>Response Success</th>
+                                <th>Errori Comuni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method-badge method-get">GET</span></td>
+                                <td><code>/</code></td>
+                                <td>Documentazione API</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>200 - Info API</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-badge method-get">GET</span></td>
+                                <td><code>/api/events</code></td>
+                                <td>Lista tutti gli eventi</td>
+                                <td><code>start, end</code> (opz)</td>
+                                <td>-</td>
+                                <td>200 - Array eventi</td>
+                                <td>400 - Date non valide</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-badge method-post">POST</span></td>
+                                <td><code>/api/events</code></td>
+                                <td>Crea nuovo evento</td>
+                                <td>-</td>
+                                <td>Event object</td>
+                                <td>201 - Evento creato</td>
+                                <td>400 - Validazione<br>409 - Conflitto orario</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-badge method-get">GET</span></td>
+                                <td><code>/api/events/:id</code></td>
+                                <td>Ottieni evento</td>
+                                <td><code>id</code> (path)</td>
+                                <td>-</td>
+                                <td>200 - Singolo evento</td>
+                                <td>400 - ID non valido<br>404 - Non trovato</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-badge method-put">PUT</span></td>
+                                <td><code>/api/events/:id</code></td>
+                                <td>Aggiorna evento</td>
+                                <td><code>id</code> (path)</td>
+                                <td>Update data</td>
+                                <td>200 - Evento aggiornato</td>
+                                <td>400 - Validazione<br>404 - Non trovato<br>409 - Conflitto</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-badge method-delete">DELETE</span></td>
+                                <td><code>/api/events/:id</code></td>
+                                <td>Elimina evento</td>
+                                <td><code>id</code> (path)</td>
+                                <td>-</td>
+                                <td>200 - Conferma</td>
+                                <td>404 - Non trovato</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-badge method-get">GET</span></td>
+                                <td><code>/api/events/filter</code></td>
+                                <td>Filtra per data</td>
+                                <td><code>start, end</code> (obbl)</td>
+                                <td>-</td>
+                                <td>200 - Eventi filtrati</td>
+                                <td>400 - Parametri mancanti</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-badge method-get">GET</span></td>
+                                <td><code>/api/events/stats</code></td>
+                                <td>Statistiche DB</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>200 - Statistiche</td>
+                                <td>500 - Errore server</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="success-box mt-3">
+                    <h5><i class="bi bi-flag me-2"></i>APPLICAZIONE PRONTA ALL'USO</h5>
+                    <p class="mb-0">
+                        <strong>Questa applicazione è completamente funzionale:</strong><br>
+                        1. Copiare tutti i file nella struttura indicata<br>
+                        2. <code>npm install</code> per installare Express e CORS<br>
+                        3. <code>node server.js</code> per avviare il server<br>
+                        4. L'API sarà disponibile su <code>http://localhost:3000</code><br>
+                        5. Utilizzare Postman, curl o un client HTTP per testare gli endpoint<br>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark border-top border-secondary py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>🟦 ROSAS LORENZO – COMPITO API</h5>
+                    <p class="mb-0">API REST CRUD per la Gestione di Eventi di Calendario</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        // Inizializza highlight.js
+        hljs.highlightAll();
+        
+        // Attiva i tab di Bootstrap
+        document.addEventListener('DOMContentLoaded', function() {
+            var triggerTabList = [].slice.call(document.querySelectorAll('#codeTab button'));
+            triggerTabList.forEach(function (triggerEl) {
+                var tabTrigger = new bootstrap.Tab(triggerEl);
+                triggerEl.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    tabTrigger.show();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
